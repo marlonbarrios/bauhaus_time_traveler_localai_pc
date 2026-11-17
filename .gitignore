@@ -1,0 +1,16 @@
+# Model weights are downloaded from Hugging Face on first launch.
+models/
+
+# Local environments. setup.sh creates these.
+server/.venv/
+server/vendor/
+desktop/node_modules/
+
+# Runtime files
+server/*.log
+desktop.log
+chrome-app-profile/
+__pycache__/
+*.pyc
+
+.DS_Store

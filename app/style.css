@@ -1,0 +1,190 @@
+:root {
+  color-scheme: dark;
+  --bg: #0d0e11;
+  --panel: #16181d;
+  --line: #262a32;
+  --text: #e8e9ec;
+  --muted: #8b909b;
+  --accent: #7c5cff;
+  --rec: #ff4d5e;
+  --ok: #3ddc97;
+  --warn: #ffb547;
+  --radius: 12px;
+  font-family: -apple-system, BlinkMacSystemFont, "Inter", system-ui, sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: var(--bg); color: var(--text); overflow: hidden; }
+body { display: flex; flex-direction: column; min-height: 0; -webkit-user-select: none; user-select: none; }
+
+header {
+  display: flex; align-items: center; gap: 16px;
+  padding: 10px 18px; border-bottom: 1px solid var(--line);
+  -webkit-app-region: drag;
+}
+.brand { font-weight: 650; letter-spacing: .2px; display: flex; align-items: center; gap: 8px; }
+.dot { width: 9px; height: 9px; border-radius: 50%; background: var(--warn); }
+.dot.ok { background: var(--ok); } .dot.err { background: var(--rec); }
+.status { color: var(--muted); font-size: 13px; flex: 1; }
+.stats { display: flex; gap: 14px; font: 12px ui-monospace, Menlo, monospace; color: var(--muted); }
+
+main {
+  flex: 1; min-height: 0; overflow: hidden;
+  display: grid; grid-template-columns: minmax(0, 1fr) 340px; grid-template-rows: minmax(0, 1fr);
+}
+/* The picture is centered in the open space. T and F give that space the whole window. */
+.stage {
+  container-type: size;
+  position: relative; display: flex; align-items: center; justify-content: center;
+  padding: 28px; min-width: 0; min-height: 0; overflow: hidden;
+}
+.out-wrap {
+  position: relative; flex: none;
+  width: min(100cqw, 100cqh); height: min(100cqw, 100cqh);
+}
+#output { width: 100%; height: 100%; border-radius: var(--radius); background: #000; display: block; }
+.overlay {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  color: var(--muted); font-size: 14px; text-align: center; padding: 24px;
+  background: rgba(0,0,0,.55); border-radius: var(--radius);
+}
+.overlay.hidden { display: none; }
+.cam-wrap {
+  position: absolute; right: 30px; bottom: 30px; width: 180px; aspect-ratio: 1;
+  border-radius: 10px; overflow: hidden; border: 1px solid var(--line); background: #000;
+  box-shadow: 0 8px 24px rgba(0,0,0,.5);
+}
+/* Hide the preview only. The camera keeps feeding the picture. */
+body.cam-hidden .cam-wrap { visibility: hidden; }
+#webcam { width: 100%; height: 100%; object-fit: cover; }
+#webcam.mirror { transform: scaleX(-1); }
+.label { position: absolute; left: 8px; top: 6px; font-size: 11px; color: #fff; opacity: .7; }
+.fs { position: absolute; top: 10px; right: 10px; z-index: 5; opacity: .85; }
+.fs:hover { opacity: 1; }
+html:fullscreen, html:fullscreen body { height: 100%; background: #000; }
+html:fullscreen #output, body.is-fullscreen #output { border-radius: 0; }
+html:fullscreen .stage, body.is-fullscreen .stage { padding: 0; }
+/* F is the picture, edge to edge, with the text put away */
+html:fullscreen header, html:fullscreen .panel,
+body.is-fullscreen header, body.is-fullscreen .panel { display: none !important; }
+html:fullscreen main, body.is-fullscreen main { grid-template-columns: minmax(0, 1fr); }
+
+/* T hides the text chrome so the picture sits alone in the middle */
+body.ui-hidden header, body.ui-hidden .panel { display: none !important; }
+body.ui-hidden .fs, html:fullscreen .fs, body.is-fullscreen .fs {
+  display: inline-flex !important; background: rgba(0,0,0,.55); color: #fff;
+}
+body.ui-hidden main { grid-template-columns: minmax(0, 1fr); }
+body.ui-hidden .stage { padding: 32px; }
+
+.panel {
+  border-left: 1px solid var(--line); background: var(--panel);
+  padding: 18px; display: flex; flex-direction: column; gap: 16px;
+  min-height: 0; overflow-y: auto;
+}
+.field { display: flex; flex-direction: column; gap: 6px; font-size: 13px; }
+.field > span { color: var(--muted); display: flex; justify-content: space-between; align-items: center; }
+.field small { color: var(--muted); font-size: 11px; }
+.row { display: flex; align-items: center; gap: 10px; }
+.row.small { font-size: 12px; }
+.row.tight { gap: 6px; }
+.grow { flex: 1; min-width: 0; }
+
+textarea, select, input[type=number] {
+  width: 100%; background: var(--bg); color: var(--text); border: 1px solid var(--line);
+  border-radius: 8px; padding: 9px 10px; font: inherit; font-size: 14px; outline: none;
+  -webkit-user-select: text; user-select: text;
+}
+textarea { resize: vertical; line-height: 1.4; }
+textarea:focus, select:focus, input:focus { border-color: var(--accent); }
+input[type=range] { width: 100%; accent-color: var(--accent); }
+kbd { font: 10px ui-monospace, Menlo, monospace; border: 1px solid var(--line); border-radius: 4px; padding: 1px 4px; }
+
+button {
+  background: #22252c; color: var(--text); border: 1px solid var(--line); border-radius: 8px;
+  padding: 9px 14px; font: inherit; font-size: 13px; cursor: pointer;
+}
+button:hover { background: #2a2e36; }
+button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+button.primary:hover { filter: brightness(1.1); }
+button.icon { padding: 6px 10px; font-size: 16px; line-height: 1; }
+.check { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--muted); cursor: pointer; }
+
+.voice { border: 1px solid var(--line); border-radius: var(--radius); padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+.mic { flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px; font-weight: 600; }
+.mic-icon { color: var(--rec); }
+.mic.recording { background: var(--rec); border-color: var(--rec); }
+.mic.recording .mic-icon { color: #fff; animation: pulse 1s infinite; }
+.mic.busy { opacity: .7; }
+@keyframes pulse { 50% { opacity: .3; } }
+.meter { height: 4px; background: var(--bg); border-radius: 2px; overflow: hidden; }
+#level { height: 100%; width: 0; background: var(--ok); transition: width 60ms linear; }
+.history { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; max-height: 140px; overflow-y: auto; }
+.history li {
+  font-size: 12px; color: var(--muted); padding: 6px 8px; border-radius: 6px; background: var(--bg); cursor: pointer;
+}
+.history li:hover { color: var(--text); }
+
+@media (max-width: 800px) {
+  main { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) minmax(160px, 42%); }
+  .panel { border-left: none; border-top: 1px solid var(--line); }
+  .cam-wrap { width: 110px; right: 24px; bottom: 24px; }
+}
+
+/* recording */
+.record { display: flex; flex-direction: column; gap: 8px; }
+.rec-btn { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 12px; font-weight: 600; }
+.rec-icon { width: 12px; height: 12px; border-radius: 50%; background: var(--rec); transition: border-radius .15s; }
+.rec-btn.on { background: #2a1418; border-color: var(--rec); color: #ffd6da; }
+.rec-btn.on .rec-icon { border-radius: 2px; }
+.rec-badge {
+  position: absolute; top: 12px; left: 12px; display: flex; align-items: center; gap: 8px;
+  background: rgba(0,0,0,.6); color: #fff; padding: 5px 10px; border-radius: 20px;
+  font: 12px ui-monospace, Menlo, monospace;
+}
+.rec-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--rec); animation: pulse 1s infinite; }
+.toast {
+  position: absolute; left: 50%; bottom: 16px; transform: translateX(-50%); max-width: 90%;
+  background: rgba(20,22,27,.92); border: 1px solid var(--line); color: var(--text);
+  padding: 8px 14px; border-radius: 8px; font-size: 13px; text-align: center;
+}
+.hidden { display: none !important; }
+
+/* music */
+.music { border: 1px solid var(--line); border-radius: var(--radius); padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+.play-btn { width: 44px; height: 44px; border-radius: 50%; padding: 0; font-size: 16px; background: var(--accent); border-color: var(--accent); color: #fff; flex: none; }
+.play-btn.playing { background: #22252c; border-color: var(--accent); color: var(--accent); }
+.track { display: flex; flex-direction: column; gap: 2px; }
+.track-name { font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.track-time { display: flex; justify-content: space-between; font: 11px ui-monospace, Menlo, monospace; color: var(--muted); }
+.file-btn { font-size: 12px; color: var(--muted); border: 1px solid var(--line); border-radius: 6px; padding: 4px 8px; cursor: pointer; }
+.file-btn:hover { color: var(--text); }
+.hint { color: var(--muted); font-size: 11px; }
+
+/* word portal */
+.portal-btn {
+  display: flex; align-items: center; justify-content: center; gap: 10px; padding: 13px; font-weight: 650;
+  background: linear-gradient(90deg, #d62828 0 33%, #f2c500 33% 66%, #1d4ed8 66% 100%); border: none; color: #fff;
+  text-shadow: 0 1px 2px rgba(0,0,0,.6);
+}
+.portal-btn:hover { filter: brightness(1.08); }
+.portal-ring { width: 14px; height: 14px; border-radius: 50%; border: 2px solid #fff; }
+.portal-btn.open { outline: 2px solid #fff; outline-offset: 2px; }
+.portal-btn.open .portal-ring { background: #fff; animation: pulse 1.2s infinite; }
+.portal-btn.hearing .portal-ring { animation-duration: .35s; box-shadow: 0 0 10px #fff; }
+.portal-words {
+  position: absolute; left: 0; right: 0; bottom: 56px; display: flex; flex-wrap: wrap; justify-content: center;
+  gap: 8px; padding: 0 24px; pointer-events: none;
+}
+.portal-words span {
+  font: 700 20px/1 -apple-system, "Helvetica Neue", sans-serif; letter-spacing: .5px; text-transform: lowercase;
+  padding: 7px 12px; color: #fff; background: rgba(0,0,0,.55); border-radius: 4px;
+  animation: wordIn .35s ease-out both;
+}
+.portal-words span:nth-child(3n+1) { border-bottom: 4px solid #d62828; }
+.portal-words span:nth-child(3n+2) { border-bottom: 4px solid #f2c500; }
+.portal-words span:nth-child(3n)   { border-bottom: 4px solid #1d4ed8; }
+@keyframes wordIn { from { opacity: 0; transform: translateY(10px) scale(.9); } to { opacity: 1; transform: none; } }
+.muted-style { opacity: .35; }
+.muted-style > span::after { content: " · off while portal is open"; color: var(--rec); }
+.portal-words span { animation: none; opacity: .75; }
+.portal-words span.fresh { animation: wordIn .3s ease-out both; opacity: 1; }

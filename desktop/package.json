@@ -1,0 +1,14 @@
+{
+  "name": "streamcam",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Webcam + voice prompts for real-time StreamDiffusion",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "start:mac": "open -n \"$PWD/node_modules/electron/dist/Electron.app\" --args \"$PWD\""
+  },
+  "devDependencies": {
+    "electron": "33.2.1"
+  }
+}

@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bauhaus Time Traveler</title>
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#0d0e11" />
+  <meta name="color-scheme" content="dark" />
+  <link rel="icon" href="icons/icon-192.png" />
+  <link rel="stylesheet" href="style.css?v=5" />
+</head>
+<body class="ui-hidden" data-ui="centered">
+  <header>
+    <div class="brand"><span class="dot" id="statusDot"></span> Bauhaus Time Traveler</div>
+    <div class="status" id="statusText">Connecting…</div>
+    <div class="stats"><span id="fps">– fps</span><span id="latency">– ms</span></div>
+  </header>
+
+  <main>
+    <section class="stage">
+      <div class="out-wrap" id="outWrap">
+        <canvas id="output" width="512" height="512"></canvas>
+        <div class="overlay" id="overlay">Loading model… first launch downloads ~3 GB</div>
+        <button class="icon fs" id="fullscreen" title="Leave fullscreen (Esc)">✕</button>
+        <div class="rec-badge hidden" id="recBadge"><span class="rec-dot"></span><span id="recTime">00:00</span></div>
+        <div class="toast hidden" id="toast"></div>
+        <div class="portal-words hidden" id="portalWords"></div>
+      </div>
+      <div class="cam-wrap">
+        <video id="webcam" autoplay playsinline muted></video>
+        <span class="label">Camera</span>
+      </div>
+    </section>
+
+    <aside class="panel">
+      <div class="record">
+        <button id="record" class="rec-btn" title="Record (R) / stop (S)"><span class="rec-icon"></span><span id="recLabel">Record video</span></button>
+        <small class="hint"><kbd>R</kbd> records the picture and the sound together. <kbd>S</kbd> stops. The sound is the music playing in the app.</small>
+      </div>
+
+      <div class="music">
+        <div class="row">
+          <button id="musicPlay" class="play-btn" title="Play / stop (P)">▶</button>
+          <div class="track grow">
+            <div class="track-name" id="trackName">bauhaus.mp3</div>
+            <input type="range" id="musicSeek" min="0" max="1000" value="0" />
+            <div class="track-time"><span id="musicPos">0:00</span><span id="musicDur">0:00</span></div>
+          </div>
+        </div>
+        <div class="row small">
+          <label class="check"><input type="checkbox" id="musicLoop" checked /> Loop</label>
+          <label class="check grow">Vol <input type="range" id="musicVol" min="0" max="100" value="80" /></label>
+          <label class="file-btn">Change…<input type="file" id="musicFile" accept="audio/*" hidden /></label>
+        </div>
+        <small class="hint"><kbd>P</kbd> plays from the start. Press again to stop. This music is the soundtrack of your recordings.</small>
+      </div>
+      <label class="field">
+        <span>Prompt <kbd>Enter</kbd> to apply</span>
+        <textarea id="prompt" rows="3" spellcheck="false">a portrait</textarea>
+      </label>
+      <label class="field">
+        <span>Style (system prompt, always applied)</span>
+        <textarea id="style" rows="6" spellcheck="false"></textarea>
+        <small>Added after every typed or spoken prompt. Voice only changes the prompt above.</small>
+      </label>
+      <div class="row">
+        <button id="apply" class="primary">Apply prompt</button>
+        <label class="check"><input type="checkbox" id="liveTyping" checked /> Live while typing</label>
+      </div>
+
+      <div class="voice">
+        <button id="portalBtn" class="portal-btn" title="Start / stop listening (L)">
+          <span class="portal-ring"></span><span id="portalLabel">Open word portal</span>
+        </button>
+        <div class="row small">
+          <label class="check"><input type="checkbox" id="portalShow" checked /> Show words on screen</label>
+          <span class="hint">Key: <kbd>L</kbd></span>
+        </div>
+        <div class="row">
+          <button id="mic" class="mic" title="Hold to talk">
+            <span class="mic-icon">●</span><span id="micLabel">Hold to talk</span>
+          </button>
+          <label class="check"><input type="checkbox" id="handsFree" /> Hands-free</label>
+        </div>
+        <div class="meter"><div id="level"></div></div>
+        <div class="row small">
+          <label class="check"><input type="radio" name="voiceMode" value="replace" checked /> Replace prompt</label>
+          <label class="check"><input type="radio" name="voiceMode" value="append" /> Add to prompt</label>
+        </div>
+        <ul id="history" class="history"></ul>
+      </div>
+
+      <label class="field">
+        <span>Transformation <b id="strengthVal">75%</b></span>
+        <input type="range" id="strength" min="0" max="100" value="75" />
+        <small>Low keeps your camera image, high follows the prompt.</small>
+      </label>
+
+      <div class="row">
+        <label class="field grow">
+          <span>Quality</span>
+          <select id="steps">
+            <option value="1">Fast (1 step)</option>
+            <option value="2">Better (2 steps)</option>
+          </select>
+        </label>
+        <label class="field grow">
+          <span>Seed</span>
+          <div class="row tight"><input type="number" id="seed" value="2" /><button id="dice" class="icon" title="Random seed">⚄</button></div>
+        </label>
+      </div>
+
+      <label class="field">
+        <span>Camera <kbd>C</kbd> show / hide</span>
+        <select id="cameraSelect"></select>
+      </label>
+      <label class="check"><input type="checkbox" id="showCam" checked /> Show camera</label>
+      <label class="check"><input type="checkbox" id="mirror" checked /> Mirror</label>
+      <button id="pause">Pause</button>
+    </aside>
+  </main>
+
+  <script src="app.js?v=9"></script>
+  <script>
+    if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js");
+  </script>
+</body>
+</html>
